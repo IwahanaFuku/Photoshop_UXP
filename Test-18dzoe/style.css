@@ -1,0 +1,29 @@
+body {
+    color: white;
+    padding: 0 16px;
+  }
+  
+li:before {
+  content: '• ';
+  width: 3em;
+}
+
+#layers {
+  border: 1px solid #808080;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+#layers {
+  border: 1px solid #808080;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+li.dragging {
+  opacity: 0.5;
+}
+
+li.over {
+  border: 2px dashed #000;
+}
