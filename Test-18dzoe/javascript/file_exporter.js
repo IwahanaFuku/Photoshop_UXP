@@ -1,4 +1,7 @@
 class FileExporter {
+  static lffs = require("uxp").storage.localFileSystem;
+  static app = require("photoshop").app;
+  static fs = require("fs");
 
   static getSupportedExtensions() {
     return [".jpg", ".png", ".psd"];
@@ -25,18 +28,18 @@ class FileExporter {
     try {
       const fileProtocol = 'file:';
 
-      const temp = await lffs.getTemporaryFolder();
-      const filename = app.activeDocument.name.split('.').slice(0, -1).join('.');
+      const temp = await this.lffs.getTemporaryFolder();
+      const filename = this.app.activeDocument.name.split('.').slice(0, -1).join('.');
 
       switch (extension) {
         case ".jpg":
-          await app.activeDocument.saveAs.jpg(temp);
+          await this.app.activeDocument.saveAs.jpg(temp);
           break;
         case ".png":
-          await app.activeDocument.saveAs.png(temp);
+          await this.app.activeDocument.saveAs.png(temp);
           break;
         case ".psd":
-          await app.activeDocument.saveAs.psd(temp);
+          await this.app.activeDocument.saveAs.psd(temp);
           break;
         default:
           break;
@@ -45,8 +48,8 @@ class FileExporter {
       const tempPath = path.join(`${fileProtocol}${temp.nativePath}`, `${filename}${extension}`);
       const exportFullPath = `${fileProtocol}${exportPath}${extension}`;
 
-      fs.copyFile(tempPath, exportFullPath);
-      fs.unlink(tempPath);
+      this.fs.copyFile(tempPath, exportFullPath);
+      this.fs.unlink(tempPath);
 
       console.log("tempPath :" + tempPath);
       console.log("exportPath :" + exportFullPath);

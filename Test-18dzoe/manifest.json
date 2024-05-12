@@ -12,11 +12,6 @@
   "manifestVersion": 5,
   "entrypoints": [
     {
-      "type": "command",
-      "id": "showAlert",
-      "label": "Show alert"
-    },
-    {
       "type": "panel",
       "id": "vanilla",
       "minimumSize": {

@@ -1,11 +1,7 @@
-const { entrypoints, storage, dom } = require("uxp");
-const { app } = require("photoshop");
-const lffs = storage.localFileSystem;
-const fs = require('fs');
-
 class InputSetManager {
-
   constructor(containerId) {
+      this.app = require("photoshop").app;
+      this.lffs = require("uxp").storage.localFileSystem;
       this.container = document.querySelector(containerId);
       this.initializeEventListeners();
   }
@@ -14,13 +10,21 @@ class InputSetManager {
       const div = document.createElement("div");
       div.classList.add("input-set");
       div.appendChild(this.textInputElement("folder path"));
-      div.appendChild(this.textInputElement("file name"));
+
+      const fileNameInput = this.textInputElement("file name");
+      div.appendChild(fileNameInput);
+      this.setFileName(fileNameInput);
+
       div.appendChild(this.selectBoxElement());
+      
 
       const selectFolderButton = this.buttonElement("フォルダ選択");
       const exportButton = this.buttonElement("書き出し");
       const deleteButton = this.buttonElement("削除");
+
       const hiddenPathElement = document.createElement("p");
+      hiddenPathElement.style.display = 'none';
+
       div.appendChild(selectFolderButton);
       div.appendChild(exportButton);
       div.appendChild(deleteButton);
@@ -28,6 +32,12 @@ class InputSetManager {
 
       this.setUpEventListeners(div, selectFolderButton, exportButton, deleteButton, hiddenPathElement);
       this.container.appendChild(div);
+  }
+
+  setFileName(fileNameInput)
+  {
+    const filename = this.app.activeDocument.name.split('.').slice(0, -1).join('.');
+    fileNameInput.value = filename;
   }
 
   textInputElement(placeholder) {
@@ -57,8 +67,9 @@ class InputSetManager {
   }
 
   setUpEventListeners(div, selectFolderButton, exportButton, deleteButton, hiddenPathElement) {
+    try{
       selectFolderButton.addEventListener("click", async () => {
-          const folderName = await lffs.getFolder();
+          const folderName = await this.lffs.getFolder();
           if (folderName) {
               div.querySelector("[placeholder='folder path']").value = folderName.nativePath;
               this.updateFullPath(div, hiddenPathElement);
@@ -72,30 +83,36 @@ class InputSetManager {
 
       exportButton.addEventListener("click", () => FileExporter.exportFile(hiddenPathElement.textContent));
       deleteButton.addEventListener("click", () => div.remove());
+    }catch(e)
+    {
+      console.error(e);
+    }
   }
 
   updateFullPath(div, hiddenPathElement) {
-      const folderNameInput = div.querySelector("[placeholder='folder path']");
-      const fileNameInput = div.querySelector("[placeholder='file name']");
-      const selectBox = div.querySelector("select");
-      const fileFullPath = path.join(folderNameInput.value, fileNameInput.value + selectBox.value);
-      hiddenPathElement.textContent = fileFullPath;
+    const folderNameInput = div.querySelector("[placeholder='folder path']");
+    const fileNameInput = div.querySelector("[placeholder='file name']");
+    const selectBox = div.querySelector("select");
+    const fileFullPath = path.join(folderNameInput.value, fileNameInput.value + selectBox.value);
+    hiddenPathElement.textContent = fileFullPath;
   }
 
   initializeEventListeners() {
-      document.getElementById("addButton").addEventListener("click", () => this.addNewInputSet());
-      document.getElementById("exportAllButton").addEventListener("click", () => this.exportAll());
+    document.getElementById("addButton").addEventListener("click", () => this.addNewInputSet());
+    document.getElementById("exportAllButton").addEventListener("click", () => this.exportAll());
+
+    document.getElementById("testButton").addEventListener("click", () => AlphachannelToMain.AddRedFile());
   }
 
   exportAll() {
-      const inputSets = this.container.querySelectorAll(".input-set");
-      inputSets.forEach(div => {
-          const hiddenPathElement = div.querySelector("p");
-          if (hiddenPathElement && hiddenPathElement.textContent) {
-              console.log("Exporting file at path: ", hiddenPathElement.textContent);
-              FileExporter.exportFile(hiddenPathElement.textContent);
-          }
-      });
+    const inputSets = this.container.querySelectorAll(".input-set");
+    inputSets.forEach(div => {
+        const hiddenPathElement = div.querySelector("p");
+        if (hiddenPathElement && hiddenPathElement.textContent) {
+            console.log("Exporting file at path: ", hiddenPathElement.textContent);
+            FileExporter.exportFile(hiddenPathElement.textContent);
+        }
+    });
   }
 }
 
