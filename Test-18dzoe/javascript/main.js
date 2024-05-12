@@ -4,6 +4,8 @@ class InputSetManager {
       this.lffs = require("uxp").storage.localFileSystem;
       this.container = document.querySelector(containerId);
       this.initializeEventListeners();
+
+      this.addNewInputSet();
   }
 
   addNewInputSet() {
