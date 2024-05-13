@@ -15,7 +15,7 @@
       "type": "panel",
       "id": "vanilla",
       "minimumSize": {
-        "width": 230,
+        "width": 380,
         "height": 200
       },
       "maximumSize": {

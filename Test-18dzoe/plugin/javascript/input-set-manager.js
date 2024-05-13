@@ -9,31 +9,31 @@ class InputSetManager {
   }
 
   addNewInputSet() {
-      const div = document.createElement("div");
-      div.classList.add("input-set");
-      div.appendChild(this.textInputElement("folder path"));
+    const div = document.createElement("div");
+    div.classList.add("input-set");
+    div.appendChild(this.textInputElement("folder path"));
 
-      const fileNameInput = this.textInputElement("file name");
-      div.appendChild(fileNameInput);
-      this.setFileName(fileNameInput);
+    const fileNameInput = this.textInputElement("file name");
+    div.appendChild(fileNameInput);
+    this.setFileName(fileNameInput);
 
-      div.appendChild(this.selectBoxElement());
-      
+    div.appendChild(this.selectBoxElement());
+    
 
-      const selectFolderButton = this.buttonElement("フォルダ選択");
-      const exportButton = this.buttonElement("書き出し");
-      const deleteButton = this.buttonElement("削除");
+    const selectFolderButton = this.buttonElement("フォルダ選択");
+    const exportButton = this.buttonElement("書き出し");
+    const deleteButton = this.buttonElement("削除");
 
-      const hiddenPathElement = document.createElement("p");
-      hiddenPathElement.style.display = 'none';
+    const hiddenPathElement = document.createElement("p");
+    hiddenPathElement.style.display = 'none';
 
-      div.appendChild(selectFolderButton);
-      div.appendChild(exportButton);
-      div.appendChild(deleteButton);
-      div.appendChild(hiddenPathElement);
+    div.appendChild(selectFolderButton);
+    div.appendChild(exportButton);
+    div.appendChild(deleteButton);
+    div.appendChild(hiddenPathElement);
 
-      this.setUpEventListeners(div, selectFolderButton, exportButton, deleteButton, hiddenPathElement);
-      this.container.appendChild(div);
+    this.setUpEventListeners(div, selectFolderButton, exportButton, deleteButton, hiddenPathElement);
+    this.container.appendChild(div);
   }
 
   setFileName(fileNameInput)
@@ -102,8 +102,6 @@ class InputSetManager {
   initializeEventListeners() {
     document.getElementById("addButton").addEventListener("click", () => this.addNewInputSet());
     document.getElementById("exportAllButton").addEventListener("click", () => this.exportAll());
-
-    document.getElementById("testButton").addEventListener("click", () => AlphachannelToMain.AddRedFile());
   }
 
   exportAll() {
@@ -117,6 +115,3 @@ class InputSetManager {
     });
   }
 }
-
-// Initialize InputSetManager
-const inputSetManager = new InputSetManager("#container");
