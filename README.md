@@ -16,8 +16,10 @@ Iwahana_fukuが開発しているAdobe UXPのテストプロジェクトです�
 [Photoshop UXP ことはじめ 環境構築 #photoshop - Qiita](https://qiita.com/yukad2/items/a8ea5c1727305ea499bd)
 
 ## Installing / インストール
-Adobe UXPをインストールし、Add Pluginからプラグインを追加します。
-現在、パブリッシュビルドなどは行っていないため、開発者モードでのみ実行可能です。
+各フォルダに含まれている`*.ccx`ファイルをダウンロードして、ファイルをクリックすることで、Cleative Cloud Desktopが開かれます。
+警告が表示されますが、OKを選択してください。
+
+Cleative Cloudに追加されると、Photoshopのプラグインに該当する拡張機能が追加されます。
 
 # License / ライセンス
 このプロジェクトはMIT ライセンスの元にライセンスされています。
