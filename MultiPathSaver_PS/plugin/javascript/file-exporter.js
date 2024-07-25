@@ -4,7 +4,7 @@ class FileExporter {
   static fs = require("fs");
 
   static getSupportedExtensions() {
-    return [".jpg", ".png", ".psd"];
+    return [".png", ".jpg", ".psd"];
   }
 
   static async exportFile(fullPath) {
