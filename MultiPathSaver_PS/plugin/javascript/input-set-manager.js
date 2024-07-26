@@ -17,10 +17,12 @@ class InputSetManager {
     div.appendChild(fileNameInput);
     this.setFileName(fileNameInput);
 
-    div.appendChild(this.selectBoxElement());
-  
+    const selectBox = this.selectBoxElement();
+    div.appendChild(selectBox);
 
     const exporPowerOfTwo = this.checkboxElement("2の累乗で書き出し");
+    const convertAlphachannelToMask = this.checkboxElement("アルファチャンネルをマスクに変換");
+    convertAlphachannelToMask.container.style.display = selectBox.value === ".png" ? 'flex' : 'none';
     const selectFolderButton = this.buttonElement("フォルダ選択");
     const exportButton = this.buttonElement("書き出し");
     const deleteButton = this.buttonElement("削除");
@@ -29,12 +31,13 @@ class InputSetManager {
     hiddenPathElement.style.display = 'none';
 
     div.appendChild(exporPowerOfTwo.container);
+    div.appendChild(convertAlphachannelToMask.container);
     div.appendChild(selectFolderButton);
     div.appendChild(exportButton);
     div.appendChild(deleteButton);
     div.appendChild(hiddenPathElement);
 
-    this.setUpEventListeners(div, exporPowerOfTwo.checkbox, selectFolderButton, exportButton, deleteButton, hiddenPathElement);
+    this.setUpEventListeners(div, selectBox, exporPowerOfTwo, convertAlphachannelToMask, selectFolderButton, exportButton, deleteButton, hiddenPathElement);
     this.container.appendChild(div);
   }
 
@@ -59,18 +62,20 @@ class InputSetManager {
 
   checkboxElement(textContent) {
     const container = document.createElement('div');
-
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+  
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-
+  
     const label = document.createElement('label');
     label.textContent = textContent;
-
-    container.appendChild(label);
+  
     container.appendChild(checkbox);
-
+    container.appendChild(label);
+  
     return { container, checkbox };
-}
+  }
 
   selectBoxElement() {
     const select = document.createElement('select');
@@ -85,7 +90,7 @@ class InputSetManager {
     return select;
   }
 
-  setUpEventListeners(div, exporPowerOfTwo, selectFolderButton, exportButton, deleteButton, hiddenPathElement) {
+  setUpEventListeners(div, selectBox, exporPowerOfTwo, convertAlphachannelToMask, selectFolderButton, exportButton, deleteButton, hiddenPathElement) {
     try{
       selectFolderButton.addEventListener("click", async () => {
           const folderName = await this.lffs.getFolder();
@@ -100,19 +105,30 @@ class InputSetManager {
           input.addEventListener("change", () => this.updateFullPath(div, hiddenPathElement));
       });
 
-      exportButton.addEventListener("click", () => this.fileExport(hiddenPathElement.textContent, exporPowerOfTwo.checked));
+      exportButton.addEventListener("click", () => this.fileExport(hiddenPathElement.textContent,
+                                                                   exporPowerOfTwo.checkbox.checked,
+                                                                   convertAlphachannelToMask.checkbox.checked));
       deleteButton.addEventListener("click", () => div.remove());
+
+      selectBox.addEventListener("change", () => {
+        convertAlphachannelToMask.container.style.display = selectBox.value === ".png" ? 'flex' : 'none';
+      });
     }catch(e)
     {
       console.error(e);
     }
   }
 
-  fileExport(textContent, isPowerOfTwo) {
+  fileExport(textContent, isPowerOfTwo, isAlphachannelToMask) {
 
     if(isPowerOfTwo)
     {
       ConvertPowerOfTwo.convertCanvasToNearestPowerOfTwo();
+    }
+
+    if(isAlphachannelToMask)
+    {
+      AlphachannelToMask.alphachannelToMask();
     }
 
     FileExporter.exportFile(textContent);
@@ -120,6 +136,11 @@ class InputSetManager {
     if(isPowerOfTwo)
     {
       Utility.undo();
+    }
+
+    if(isAlphachannelToMask)
+    {
+      Utility.undo(-5);
     }
   }
 
